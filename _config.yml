@@ -5,14 +5,15 @@
 # Site
 title: Java全栈封神
 subtitle: 佘黎明的个人博客
+description: Java | 小程序 | 全栈 | 分布式 | 微服务
 author: 佘黎明
 language:
 timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://kaijun.rocks/hexo-theme-huxblog
-root: /hexo-theme-huxblog/
+url: https://shelimingming.github.io/sheliming-blog/
+root: /sheliming-blog/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 
@@ -22,7 +23,6 @@ permalink_defaults:
 SEOTitle: java | 全栈 | 佘黎明
 header-img: img/home-bg.jpg
 email: shelimingming@qq.com
-description: ""
 keyword: ""
 
 
@@ -70,23 +70,8 @@ featured-condition-size: 1              # A tag will be featured if the size of 
 # Friends
 friends: [
     {
-        title: "Kaijun's Blog",
+        title: "Java全栈封神微信公众号",
         href: "http://blog.kaijun.rocks"
-    },{
-        title: "Hux Blog",
-        href: "http://huangxuan.me"
-    },{
-        title: "Foo",
-        href: "#"
-    },{
-        title: "Bar",
-        href: "#"
-    },{
-        title: "Example Friends",
-        href: "#"
-    },{
-        title: "It helps SEO",
-        href: "#"
     }
 ]
 
