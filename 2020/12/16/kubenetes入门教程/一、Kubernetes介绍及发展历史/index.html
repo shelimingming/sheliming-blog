@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Java | 小程序 | 全栈 | 分布式 | 微服务">
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/sheliming-blog/img/favicon.ico">
+
+    <title>
+        
+          一、Kubernetes介绍及发展历史 - java | 全栈 | 佘黎明
+        
+    </title>
+
+    <link rel="canonical" href="https://shelimingming.github.io/sheliming-blog/sheliming-blog/2020/12/16/kubenetes入门教程/一、Kubernetes介绍及发展历史/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/sheliming-blog/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/sheliming-blog/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/sheliming-blog/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/sheliming-blog/">Java全栈封神</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/sheliming-blog/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/sheliming-blog/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/sheliming-blog/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/sheliming-blog/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://shelimingming.github.io/sheliming-blog/sheliming-blog/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/sheliming-blog/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/sheliming-blog/tags/#Kubenetes入门" title="Kubenetes入门">Kubenetes入门</a>
+                        
+                    </div>
+                    <h1>一、Kubernetes介绍及发展历史</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 佘黎明 on
+                        2020-12-16
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><img src="./kubernetes/image-20201023092004251.png" alt="image-20201023092004251"></p>
+<p><strong>Kubernetes</strong>的名字来自希腊语，意思是“<em>舵手”</em> 或 “<em>领航员”</em>。<em>K8s</em>是将8个字母“ubernete”替换为“8”的缩写。</p>
+<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p>是Google开源的<strong>容器集群管理系统</strong>，最初是内部Borg。是<strong>容器编排调度引擎</strong>。</p>
+<p>为跨主机的容器化应用提供<strong>资源调度、服务发现、高可用管理、弹性伸缩</strong>功能。</p>
+<p>它不仅仅是一个编排系统，而是提供一个规范描述集群的架构，定义服务的最终状态，k8s自动帮你将系统达到和维持这个状态。</p>
+<h3 id="同类产品"><a href="#同类产品" class="headerlink" title="同类产品"></a>同类产品</h3><p>Apache Mesos 分布式资源管理框架 2019.05Twitter转向k8s</p>
+<p>Docker Swarm  2019.07 阿里云不提供</p>
+<p>kubernetes Google 10年前 borg  Go重写</p>
+<h2 id="二、特性"><a href="#二、特性" class="headerlink" title="二、特性"></a>二、特性</h2><ol>
+<li>自动化部署：yaml部署k8s，自动分配到node</li>
+<li>系统自愈：node当机，k8s会重新将pod调用到可用节点</li>
+<li>水平扩展：HPA周期调整RC的副本数量</li>
+<li>服务发现和负载均衡：为每个容器分配IP，service代理</li>
+<li>自动更新和回滚：不停应用</li>
+</ol>
+<p>轻量级：资源消耗小</p>
+<p>开源：</p>
+<p>弹性伸缩：</p>
+<p>负载均衡：IPVS</p>
+<h2 id="三、架构"><a href="#三、架构" class="headerlink" title="三、架构"></a>三、架构</h2><p>borg：</p>
+<p><img src="./kubernetes/image-20201001193708184.png" alt="image-20201001193708184"></p>
+<p>Kubernetes：</p>
+<p><img src="./kubernetes/u=3665971168,1175307714&amp;fm=26&amp;gp=0.jpg" alt="点击查看源网页"></p>
+<p>Master节点：集群的控制节点</p>
+<p>1、API Server：提供Http接口，对资源增删改查</p>
+<p>2、Controller Manager：资源对象自动化控制中心，维持副本数量</p>
+<p>3、Scheduler：负责资源调度，选择合适的节点</p>
+<p>4、Etcd：master的状态存在etcd</p>
+<p>Node节点：工作节点</p>
+<p>1、Kubelet：直接和容器引擎交互 </p>
+<p>2、Kube-proxy：实现service的通信和负载均衡组件</p>
+<p>3、Docker：</p>
+<p>插件：</p>
+<p>CoreDNS：可以为集群中的SVC创建一个域名IP的对应关系解析</p>
+<p>DashBoard：提供一个BS访问集群</p>
+<p>Ingress Controller：官方只有四层负载，Ingress可以七层</p>
+<p>Federation：提供可以跨集群的多k8s管理</p>
+<p>Prometheus：提供监控</p>
+<p>ELK：日志统一分析</p>
+<h2 id="四、资源对象"><a href="#四、资源对象" class="headerlink" title="四、资源对象"></a>四、资源对象</h2><h3 id="1、Pod"><a href="#1、Pod" class="headerlink" title="1、Pod"></a>1、Pod</h3><p>Pause+contaniner1+…</p>
+<p>部署的最小单元，一个Pod可以包含多个容器，共享网络地址和文件系统。</p>
+<p>普通Pod：信息存在etcd</p>
+<p>静态Pod：放在Node节点上</p>
+<h3 id="2、Replication-Controller"><a href="#2、Replication-Controller" class="headerlink" title="2、Replication Controller"></a>2、Replication Controller</h3><p>RC是k8s集群中最早保证Pod高可用的API。在新版本中使用ReplicaSet来代替RepolicationController。</p>
+<h3 id="3、Service"><a href="#3、Service" class="headerlink" title="3、Service"></a>3、Service</h3><p>服务的访问入口，对应着一个集群内部有效的虚拟ip。</p>
+<h3 id="4、Deployment"><a href="#4、Deployment" class="headerlink" title="4、Deployment"></a>4、Deployment</h3><p>对k8s一次更新操作。更新RC。支持滚动更新</p>
+<h3 id="5、Replica-Set"><a href="#5、Replica-Set" class="headerlink" title="5、Replica Set"></a>5、Replica Set</h3><p>新一代RC，支持更多类型的匹配模式，支持集合式的selector</p>
+<h3 id="6、DaemonSet"><a href="#6、DaemonSet" class="headerlink" title="6、DaemonSet"></a>6、DaemonSet</h3><p>保证每个节点都有此Pod运行， </p>
+<h3 id="7、Job"><a href="#7、Job" class="headerlink" title="7、Job"></a>7、Job</h3><p>批处理</p>
+<h3 id="8、Namespace"><a href="#8、Namespace" class="headerlink" title="8、Namespace"></a>8、Namespace</h3><p>default kube-system</p>
+<h3 id="9、RBAC"><a href="#9、RBAC" class="headerlink" title="9、RBAC"></a>9、RBAC</h3><h3 id="10、HPA"><a href="#10、HPA" class="headerlink" title="10、HPA"></a>10、HPA</h3><p>Horizaontal Pod AutoSaling，支持更具Pod CPU利用率扩容、</p>
+<h3 id="11、Statefull-Set"><a href="#11、Statefull-Set" class="headerlink" title="11、Statefull Set"></a>11、Statefull Set</h3><p>稳定持久化存储：基于PVC</p>
+<p>稳定网路标志：PodName和HostName不变</p>
+<p>有序部署，有序扩展：基于init containers实现</p>
+<p>有序收缩：</p>
+<p>分类：</p>
+<p><strong>名称空间级别资源：</strong></p>
+<p>工作负载型：Pod、ReplicaSet、Deployment、Stateful set、Deamon Set、Job、CornJob</p>
+<p>服务发现、负载均衡型：Service、Ingress</p>
+<p>配置、存储型：Volume、CSI（容器存储接口）</p>
+<p>特殊类型的存储卷：ConfigMap、Secret、DownwardAPI</p>
+<p><strong>集群级别资源：</strong></p>
+<p>Namespace、Node、Role、CluesterRule、RoleBinding、CluesterRoleBinding</p>
+<p><strong>元数据级别资源：</strong></p>
+<p>HPA、PodTemplate、LimitRange</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: group/apiversion # 如果没有给定<span class="built_in"> group </span>名称，那么默认为 core，可以使用 kubectl api-versions # 获取当前 k8s 版本上所有的 apiVersion 版本信息( 每个版本可能不同 )</span><br><span class="line">kind:	#资源类别</span><br><span class="line">metadata：	#资源元数据</span><br><span class="line">	name</span><br><span class="line">	namespace</span><br><span class="line">	lables</span><br><span class="line">	annotations	# 主要目的是方便用户阅读查找</span><br><span class="line">spec: # 期望的状态（disired state）</span><br><span class="line">status：# 当前状态，本字段有 Kubernetes 自身维护，用户不能去定义</span><br></pre></td></tr></table></figure>
+<h2 id="五、创建资源对象"><a href="#五、创建资源对象" class="headerlink" title="五、创建资源对象"></a>五、创建资源对象</h2><h3 id="1、Pod-1"><a href="#1、Pod-1" class="headerlink" title="1、Pod"></a>1、Pod</h3><h4 id="基本创建"><a href="#基本创建" class="headerlink" title="基本创建"></a>基本创建</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pod-demo</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">default</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">myapp</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx1</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:1.7.9</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx2</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:1.18</span></span><br></pre></td></tr></table></figure>
+<p>保存以上内容到pod-demo.yaml，然后使用kubectl执行该yaml。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@k8smaster k8s]# kubectl apply -f pod-demo.yaml </span><br><span class="line">pod/pod-demo created</span><br><span class="line"></span><br><span class="line">[root@k8smaster k8s]# kubectl get pod </span><br><span class="line">NAME       READY   STATUS    RESTARTS   AGE</span><br><span class="line">pod-demo   2/2     Running   1          49s</span><br></pre></td></tr></table></figure>
+<h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h4><p>InitC MainC</p>
+<p>​         Start        readiness   liveness                  stop</p>
+<p>InitC:初始化容器，顾名思义容器启动的时候，会先启动可一个或多个容器，如果有多个，那么这几个Init Container按照定义的顺序依次执行，只有所有的Init Container执行完后，主容器才会启动。由于一个Pod里的存储卷是共享的，所以Init Container里产生的数据可以被主容器使用到。</p>
+<p>探针是kubelet对容器执行的定期诊断。ExecAction、TCPSocketAction、HttpGetAction</p>
+<p>livenessProbe</p>
+<p>readinessProbe</p>
+<p><strong>状态：</strong></p>
+<p>Pending：挂起</p>
+<p>Running：运行中</p>
+<p>Succeeded：成功</p>
+<p>Failed：失败</p>
+<p>Unknown：未知</p>
+<h2 id="六、网络通信"><a href="#六、网络通信" class="headerlink" title="六、网络通信"></a>六、网络通信</h2><p>同一个Pod多个容器：localhost</p>
+<p>各Pod之间：Overlay NetWork</p>
+<p>Pod与Service 之间：各节点iptables</p>
+<p><img src="./kubernetes/image-20201002211758215.png" alt="image-20201002211758215"></p>
+<h1 id="容器生命周期"><a href="#容器生命周期" class="headerlink" title="容器生命周期"></a>容器生命周期</h1><h1 id="控制器"><a href="#控制器" class="headerlink" title="控制器"></a>控制器</h1><h2 id="1、什么是控制器"><a href="#1、什么是控制器" class="headerlink" title="1、什么是控制器"></a>1、什么是控制器</h2><p>相当于一个状态机，用来控制Pod的状态和行为</p>
+<h2 id="2、控制器类型"><a href="#2、控制器类型" class="headerlink" title="2、控制器类型"></a>2、控制器类型</h2><h3 id="ReplicationController-ReplicaSet"><a href="#ReplicationController-ReplicaSet" class="headerlink" title="ReplicationController ReplicaSet"></a>ReplicationController ReplicaSet</h3><p>RS支持集合式的Selector</p>
+<h3 id="Deployment"><a href="#Deployment" class="headerlink" title="Deployment"></a>Deployment</h3><p>底层通过RS，</p>
+<p>滚动升级、回滚应用、扩容缩容、暂停继续</p>
+<h3 id="DemonSet"><a href="#DemonSet" class="headerlink" title="DemonSet"></a>DemonSet</h3><p>确保全部或一些Node上运行一个Pod副本</p>
+<p>集群存储：gluserd、ceph</p>
+<p>日志收集：fluentd、logstash</p>
+<h3 id="StatefulSet"><a href="#StatefulSet" class="headerlink" title="StatefulSet"></a>StatefulSet</h3><h3 id="Job-CornJob"><a href="#Job-CornJob" class="headerlink" title="Job/CornJob"></a>Job/CornJob</h3><h3 id="Horizontal-Pod-AutoScaling"><a href="#Horizontal-Pod-AutoScaling" class="headerlink" title="Horizontal Pod AutoScaling"></a>Horizontal Pod AutoScaling</h3><h1 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h1><p>ClusterIp：默认类型，自动分配一个仅集群内部访问的虚拟ip</p>
+<p>NodePort：在ClusterIp的基础上为Service在每台机器上绑定一个端口，这样就可以通过NodeIP:NodePort来访问该服务</p>
+<p>LoadBalancer：在NodePort的基础上，借助云供应商创建的一个外部负载均衡，并将请求转发到NodeIP:NodePort</p>
+<p>ExternalName：把集群外部的服务引入到集群内部中来，</p>
+<h3 id="HeadlessService"><a href="#HeadlessService" class="headerlink" title="HeadlessService"></a>HeadlessService</h3><p># </p>
+<h1 id="Ingress"><a href="#Ingress" class="headerlink" title="Ingress"></a>Ingress</h1><h1 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h1><h2 id="1、configMap"><a href="#1、configMap" class="headerlink" title="1、configMap"></a>1、configMap</h2><p>许多应用程序会从配置文件、命令行参数或环境变量中读取配置信息。ConfigMap API 给我们提供了向容器中注入配置信息的机制，</p>
+<h3 id="创建ConfigMap"><a href="#创建ConfigMap" class="headerlink" title="创建ConfigMap"></a>创建ConfigMap</h3><h4 id="1、通过kubectl命令创建："><a href="#1、通过kubectl命令创建：" class="headerlink" title="1、通过kubectl命令创建："></a>1、通过kubectl命令创建：</h4><p>调用该命令创建一个configMap，有两个配置项:</p>
+<p>第一个key:JAVA_OPTS，value:Dspring.profiles.active=staging</p>
+<p>第二个key:application，value:demo_app</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create configmap test-config1 --from-literal=JAVA_OPTS=Dspring.profiles.active=staging --from-literal=application=demo_app</span><br></pre></td></tr></table></figure>
+<p>可以查看当前configmap：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get configmap -o yaml</span><br></pre></td></tr></table></figure>
+<p>返回结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">items:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line">  <span class="attr">data:</span></span><br><span class="line">    <span class="attr">JAVA_OPTS:</span> <span class="string">Dspring.profiles.active=staging</span></span><br><span class="line">    <span class="attr">application:</span> <span class="string">demo_app</span></span><br><span class="line">  <span class="attr">kind:</span> <span class="string">ConfigMap</span></span><br><span class="line">  <span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">creationTimestamp:</span> <span class="string">"2020-11-06T02:16:49Z"</span></span><br><span class="line">    <span class="attr">managedFields:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line">      <span class="attr">fieldsType:</span> <span class="string">FieldsV1</span></span><br><span class="line">      <span class="attr">fieldsV1:</span></span><br><span class="line">        <span class="attr">f:data:</span></span><br><span class="line">          <span class="string">.:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">          <span class="attr">f:JAVA_OPTS:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">          <span class="attr">f:application:</span> <span class="string">&#123;&#125;</span></span><br><span class="line">      <span class="attr">manager:</span> <span class="string">kubectl-create</span></span><br><span class="line">      <span class="attr">operation:</span> <span class="string">Update</span></span><br><span class="line">      <span class="attr">time:</span> <span class="string">"2020-11-06T02:16:49Z"</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">special-config</span></span><br><span class="line">    <span class="attr">namespace:</span> <span class="string">default</span></span><br><span class="line">    <span class="attr">resourceVersion:</span> <span class="string">"83868477"</span></span><br><span class="line">    <span class="attr">selfLink:</span> <span class="string">/api/v1/namespaces/default/configmaps/special-config</span></span><br><span class="line">    <span class="attr">uid:</span> <span class="string">3d3a771c-d579-41cf-88b4-be85b810bb2b</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">List</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">resourceVersion:</span> <span class="string">""</span></span><br><span class="line">  <span class="attr">selfLink:</span> <span class="string">""</span></span><br></pre></td></tr></table></figure>
+<h4 id="2、通过ymal创建"><a href="#2、通过ymal创建" class="headerlink" title="2、通过ymal创建"></a>2、通过ymal创建</h4><p>创建ymal文件：test-config2.ymal</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ConfigMap</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">test-config2</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">default</span></span><br><span class="line"><span class="attr">data:</span></span><br><span class="line">  <span class="attr">JAVA_OPTS:</span> <span class="string">Dspring.profiles.active=prod</span></span><br><span class="line">  <span class="attr">application:</span> <span class="string">demo_app</span></span><br></pre></td></tr></table></figure>
+<p>通过ymal创建：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f test-config2.ymal</span><br></pre></td></tr></table></figure>
+<p>查询结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get configmap</span><br></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NAME           DATA   AGE</span><br><span class="line">test-config1   <span class="number">2</span>      <span class="number">41</span>m</span><br><span class="line">test-config2   <span class="number">2</span>      <span class="number">26</span>s</span><br></pre></td></tr></table></figure>
+<h3 id="Pod中使用ConfigMap"><a href="#Pod中使用ConfigMap" class="headerlink" title="Pod中使用ConfigMap"></a>Pod中使用ConfigMap</h3><h4 id="1、使用-ConfigMap-来替代环境变量"><a href="#1、使用-ConfigMap-来替代环境变量" class="headerlink" title="1、使用 ConfigMap 来替代环境变量"></a>1、使用 ConfigMap 来替代环境变量</h4><p>创建ymal文件：test-configmap-pod.ymal</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">test-configmap-pod</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">test-configmap-container</span></span><br><span class="line">      <span class="attr">image:</span> <span class="string">nginx:1.7.9</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">[</span> <span class="string">"/bin/sh"</span><span class="string">,</span> <span class="string">"-c"</span><span class="string">,</span> <span class="string">"env"</span> <span class="string">]</span></span><br><span class="line">      <span class="attr">env:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">SPECIAL_LEVEL_KEY</span> </span><br><span class="line">          <span class="attr">valueFrom:</span></span><br><span class="line">            <span class="attr">configMapKeyRef:</span> </span><br><span class="line">              <span class="attr">name:</span> <span class="string">test-config1</span></span><br><span class="line">              <span class="attr">key:</span> <span class="string">JAVA_OPTS</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">SPECIAL_TYPE_KEY</span> </span><br><span class="line">          <span class="attr">valueFrom:</span></span><br><span class="line">            <span class="attr">configMapKeyRef:</span></span><br><span class="line">              <span class="attr">name:</span> <span class="string">test-config2</span></span><br><span class="line">              <span class="attr">key:</span> <span class="string">application</span></span><br><span class="line">      <span class="attr">envFrom:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">configMapRef:</span></span><br><span class="line">            <span class="attr">name:</span> <span class="string">test-config2</span></span><br><span class="line">  <span class="attr">restartPolicy:</span> <span class="string">Never</span></span><br></pre></td></tr></table></figure>
+<h4 id="2、用-ConfigMap-设置命令行参数"><a href="#2、用-ConfigMap-设置命令行参数" class="headerlink" title="2、用 ConfigMap 设置命令行参数"></a>2、用 ConfigMap 设置命令行参数</h4><h4 id="3、通过数据卷插件使用ConfigMap"><a href="#3、通过数据卷插件使用ConfigMap" class="headerlink" title="3、通过数据卷插件使用ConfigMap"></a>3、通过数据卷插件使用ConfigMap</h4><h2 id="2、Secret"><a href="#2、Secret" class="headerlink" title="2、Secret"></a>2、Secret</h2><h2 id="3、volume"><a href="#3、volume" class="headerlink" title="3、volume"></a>3、volume</h2><h2 id="4、Persistent-Volume"><a href="#4、Persistent-Volume" class="headerlink" title="4、Persistent Volume"></a>4、Persistent Volume</h2><h1 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h1><p>Kubernetes 作为一个分布式集群的管理工具，保证集群的安全性是其一个重要的任务。API Server 是集群内部各个组件通信的中介，也是外部控制的入口。所以 Kubernetes 的安全机制基本就是围绕保护 API Server 来设计的。Kubernetes 使用了认证（Authentication）、鉴权（Authorization）、准入控制（Admission Control）三步来保证API Server的安全</p>
+<h2 id="Authentication认证"><a href="#Authentication认证" class="headerlink" title="Authentication认证"></a>Authentication认证</h2><h2 id="Authorization鉴权"><a href="#Authorization鉴权" class="headerlink" title="Authorization鉴权"></a>Authorization鉴权</h2><p>Role、ClusterRole、RoleBinding、ClusterRoleBinding</p>
+<h1 id="Helm"><a href="#Helm" class="headerlink" title="Helm"></a>Helm</h1><h1 id="Kubectl"><a href="#Kubectl" class="headerlink" title="Kubectl"></a>Kubectl</h1><h3 id="一、命令行语法"><a href="#一、命令行语法" class="headerlink" title="一、命令行语法"></a>一、命令行语法</h3><p>kubectl [command] [type] [name] [flag]</p>
+<p>command:create/delete/get/describe/apply</p>
+<p>type:资源对象的类型，区分大小写。daemonsets/deployments/events/endpoints/horizontalpodautoscalers/ingresses/jobs/nodes/namespaces/pods/persistentvolumes/persistentvolumesclaims/resourcequotas/replicationcontrollers/secerts/services/serviceaccounts</p>
+<p>name:资源对象名称，区分大小写。</p>
+<p>flag:可选参数。 -n 指定namespace </p>
+<p><img src="./kubernetes/image-20200921223358371.png" alt="image-20200921223358371"></p>
+<p>kubectl get pod/<strong> service/</strong>  -n ***</p>
+<h3 id="二、kubectl子命令"><a href="#二、kubectl子命令" class="headerlink" title="二、kubectl子命令"></a>二、kubectl子命令</h3><p>kubectl apply -f </p>
+<p>Kubectl cluster -info</p>
+<p>Kubectl attach pod -c container</p>
+<p><img src="./kubernetes/image-20200923235403750.png" alt="image-20200923235403750"></p>
+<p><img src="./kubernetes/image-20200924161659233.png" alt="image-20200924161659233"></p>
+<h2 id="K8s设计理念"><a href="#K8s设计理念" class="headerlink" title="K8s设计理念"></a>K8s设计理念</h2><p>1、声明式操作，不是命令式的。运行多次也不会出错</p>
+<p>2、</p>
+<p><img src="./kubernetes/image-20200924213909977.png" alt="image-20200924213909977"></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/sheliming-blog/2020/12/17/kubenetes入门教程/十一、Kubernetes CRD实战/" data-toggle="tooltip" data-placement="top" title="十一、Kubernetes CRD实战">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/sheliming-blog/2020/12/10/通过Nginx将Springboot程序暴露https接口/" data-toggle="tooltip" data-placement="top" title="通过Nginx将Springboot程序暴露https接口">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/sheliming-blog/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/sheliming-blog/tags/#Kubenetes入门" title="Kubenetes入门">Kubenetes入门</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://blog.kaijun.rocks" target="_blank">Java全栈封神微信公众号</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "hexo-theme-huxblog";
+    var disqus_identifier = "https://shelimingming.github.io/sheliming-blog/2020/12/16/kubenetes入门教程/一、Kubernetes介绍及发展历史/";
+    var disqus_url = "https://shelimingming.github.io/sheliming-blog/2020/12/16/kubenetes入门教程/一、Kubernetes介绍及发展历史/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/Demonbane_x">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Demonbane">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/Demonbane">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/demonbane.cn">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Kaijun">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/kaijun-chen-42089354">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Java全栈封神 2020 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/sheliming-blog/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/sheliming-blog/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/sheliming-blog/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://shelimingming.github.io/sheliming-blog/sheliming-blog/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-49627206-1';
+    var _gaDomain = 'huangxuan.me';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = '4cc1f2d8f3067386cc5cdb626a202900';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://shelimingming.github.io/sheliming-blog/sheliming-blog/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

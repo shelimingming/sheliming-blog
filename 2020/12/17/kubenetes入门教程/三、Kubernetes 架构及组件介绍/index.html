@@ -13,11 +13,11 @@
 
     <title>
         
-          通过Nginx将Springboot程序暴露https接口 - java | 全栈 | 佘黎明
+          三、Kubernetes 架构及组件介绍 - java | 全栈 | 佘黎明
         
     </title>
 
-    <link rel="canonical" href="https://shelimingming.github.io/sheliming-blog/sheliming-blog/2020/12/10/通过Nginx将Springboot程序暴露https接口/">
+    <link rel="canonical" href="https://shelimingming.github.io/sheliming-blog/sheliming-blog/2020/12/17/kubenetes入门教程/三、Kubernetes 架构及组件介绍/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/sheliming-blog/css/bootstrap.min.css">
@@ -165,14 +165,14 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/sheliming-blog/tags/#微信小程序" title="微信小程序">微信小程序</a>
+                          <a class="tag" href="/sheliming-blog/tags/#Kubenetes入门" title="Kubenetes入门">Kubenetes入门</a>
                         
                     </div>
-                    <h1>通过Nginx将Springboot程序暴露https接口</h1>
+                    <h1>三、Kubernetes 架构及组件介绍</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by 佘黎明 on
-                        2020-12-10
+                        2020-12-17
                     </span>
                 </div>
             </div>
@@ -191,33 +191,33 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>我们在使用springboot编写的后台接口，默认只有http协议可以访问，但是微信小程序只能访问https类型的接口，所以我们需要将http接口通过nginx转化成https接口。</p>
-<h2 id="一、编写springboot代码，暴露http接口"><a href="#一、编写springboot代码，暴露http接口" class="headerlink" title="一、编写springboot代码，暴露http接口"></a>一、编写springboot代码，暴露http接口</h2><p>这里就正常的编写springboot代码，暴露localhost:9999/api/time/version接口，然后部署到Linux服务器中。</p>
-<p>参考代码：<a href="https://github.com/shelimingming/time_manage/tree/main/time_manage_backend" target="_blank" rel="noopener">https://github.com/shelimingming/time_manage/tree/main/time_manage_backend</a></p>
-<p><strong>这里已经将<a href="http://www.magiccjumboo.top域名绑定了服务器。" target="_blank" rel="noopener">www.magiccjumboo.top域名绑定了服务器。</a></strong>如果想通过https暴露接口必须绑定域名。</p>
-<p>访问：<a href="http://www.magiccjumboo.top:9999/api/time/version，即可得到结果" target="_blank" rel="noopener">http://www.magiccjumboo.top:9999/api/time/version，即可得到结果</a></p>
-<p><img src="image-20201129111902764.png" alt="image-20201129111902764" style="zoom:50%;"></p>
-<h1 id="二、通过Nginx代理后端接口"><a href="#二、通过Nginx代理后端接口" class="headerlink" title="二、通过Nginx代理后端接口"></a>二、通过Nginx代理后端接口</h1><p>下面我们需要通过Nginx代理这个接口：</p>
-<h3 id="1、安装Nginx"><a href="#1、安装Nginx" class="headerlink" title="1、安装Nginx"></a>1、安装Nginx</h3><p>首先安装Nginx，详细过程这里就不赘述，可以参考这篇博客：<a href="https://www.cnblogs.com/zhangliuhero/p/13804731.html。" target="_blank" rel="noopener">https://www.cnblogs.com/zhangliuhero/p/13804731.html。</a></p>
-<h3 id="2、配置nginx-conf"><a href="#2、配置nginx-conf" class="headerlink" title="2、配置nginx.conf"></a>2、配置nginx.conf</h3><p>vi /etc/nginx/nginx.conf:</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span> default_server;</span><br><span class="line">        <span class="attribute">listen</span>       [::]:<span class="number">80</span> default_server;</span><br><span class="line">        <span class="attribute">server_name</span>  _;</span><br><span class="line">        <span class="attribute">root</span>         /usr/share/nginx/html;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> /api &#123;</span><br><span class="line">                <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">                <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">                <span class="attribute">proxy_pass</span> http://127.0.0.1:9999/api;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>配置/api路径都转发到本机的9999端口，就是我们刚刚发布的接口上，然后重新加载nginx，<code>nginx -s reload</code>。</p>
-<h3 id="3、验证"><a href="#3、验证" class="headerlink" title="3、验证"></a>3、验证</h3><p>访问:<a href="http://www.magiccjumboo.top/api/time/version" target="_blank" rel="noopener">http://www.magiccjumboo.top/api/time/version</a></p>
-<p><img src="image-20201129112734345.png?lastModify=1606620513.png" alt="image-20201129112734345" style="zoom:50%;"></p>
-<p>但是访问<a href="https://www.magiccjumboo.top/api/time/version，还是访问不通，所以我们开始https的配置。" target="_blank" rel="noopener">https://www.magiccjumboo.top/api/time/version，还是访问不通，所以我们开始https的配置。</a></p>
-<h1 id="三、在阿里云上申请免费的-SSL证书"><a href="#三、在阿里云上申请免费的-SSL证书" class="headerlink" title="三、在阿里云上申请免费的 SSL证书"></a>三、在阿里云上申请免费的 SSL证书</h1><p>在阿里云中搜索SSL证书，点击购买证书，安装下图进行选择，可以免费申请SSL证书。</p>
-<p><img src="image-20201129113356666.png" alt="image-20201129113356666"></p>
-<p>点击申请证书，填写域名相关信息，几分钟后自动审批完成，点击下载，可以下载Nginx的证书：</p>
-<p><img src="image-20201129113622895.png" alt="image-20201129113622895"></p>
-<p><img src="image-20201129113654546.png" alt="image-20201129113654546" style="zoom:30%;"></p>
-<h1 id="四、Nginx中SSL配置"><a href="#四、Nginx中SSL配置" class="headerlink" title="四、Nginx中SSL配置"></a>四、Nginx中SSL配置</h1><p>将下载的两个文件拷贝到Nginx的机器中：</p>
-<p><img src="image-20201129114022626.png" alt="image-20201129114022626" style="zoom:50%;"></p>
-<p>vi /etc/nginx/nginx.conf:</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">443</span> ssl http2 default_server;</span><br><span class="line">        <span class="attribute">listen</span>       [::]:<span class="number">443</span> ssl http2 default_server;</span><br><span class="line">        <span class="attribute">server_name</span>  _;</span><br><span class="line">        <span class="attribute">root</span>         /usr/share/nginx/html;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">ssl_certificate</span> <span class="string">"/etc/pki/nginx/4809666_www.magiccjumboo.top.pem"</span>;</span><br><span class="line">        <span class="attribute">ssl_certificate_key</span> <span class="string">"/etc/pki/nginx/4809666_www.magiccjumboo.top.key"</span>;</span><br><span class="line">        <span class="attribute">ssl_session_cache</span> shared:SSL:<span class="number">1m</span>;</span><br><span class="line">        <span class="attribute">ssl_session_timeout</span>  <span class="number">10m</span>;</span><br><span class="line">        <span class="attribute">ssl_ciphers</span> PROFILE=SYSTEM;</span><br><span class="line">        <span class="attribute">ssl_prefer_server_ciphers</span> <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Load configuration files for the default server block.</span></span><br><span class="line">        <span class="attribute">include</span> /etc/nginx/default.d/<span class="regexp">*.conf</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> /api &#123;</span><br><span class="line">                <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">                <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">                <span class="attribute">proxy_pass</span> http://127.0.0.1:9999/api;</span><br><span class="line">         &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在配置文件中增加一个server监听443端口（https默认443端口），然后修改ssl配置指向刚刚上传的两个文件。</p>
-<p>访问<a href="https://www.magiccjumboo.top/api/time/version：" target="_blank" rel="noopener">https://www.magiccjumboo.top/api/time/version：</a></p>
-<p><img src="image-20201129114219644.png" alt="image-20201129114219644" style="zoom:50%;"></p>
-<p>至此，大功告成，可以在微信小程序中调用该接口了！！！</p>
+                <p>学习k8s第一个拦路虎就是安装k8s。从源码安装一个k8s并不是一个容易的事情，在没有经验的情况下几乎不可能安装成功，各种问题会将你耐心一点点磨平。</p>
+<p>不过好在现在已经有很多安装的框架，可以非常容易的安装k8s，让我们可以快速上手k8s。</p>
+<h2 id="一、使用minikube安装开发环境"><a href="#一、使用minikube安装开发环境" class="headerlink" title="一、使用minikube安装开发环境"></a>一、使用minikube安装开发环境</h2><p>如果你只是想搭建一个k8s集群开发测试使用，那minikube是一个最好不过的选择！</p>
+<p>它可以一条命令快速的在mac、windows、Linux上搭建一个本地的k8s集群。</p>
+<p>使用文档地址：<a href="https://minikube.sigs.k8s.io/docs/start/" target="_blank" rel="noopener">https://minikube.sigs.k8s.io/docs/start/</a></p>
+<p>mac上只需要执行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install minikube</span><br><span class="line">minikube start</span><br></pre></td></tr></table></figure>
+<p>一个本地k8s集群就搭建完成，其他操作系统也差不多，就不详细说了。</p>
+<h3 id="linux下安装"><a href="#linux下安装" class="headerlink" title="linux下安装"></a>linux下安装</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">yum -y <span class="keyword">update</span></span><br><span class="line">yum remove docker  docker-common docker-selinux docker-<span class="keyword">engine</span></span><br><span class="line">sudo yum <span class="keyword">install</span> docker</span><br><span class="line">sudo systemctl <span class="keyword">start</span> docker</span><br><span class="line">sudo systemctl <span class="keyword">enable</span> docker</span><br><span class="line"></span><br><span class="line">sudo groupadd docker</span><br><span class="line">adduser sheliming</span><br><span class="line"><span class="keyword">password</span> sheliming</span><br><span class="line">sudo usermod -aG docker sheliming</span><br><span class="line">sudo systemctl restart docker</span><br><span class="line">su root</span><br><span class="line">su - sheliming</span><br><span class="line"></span><br><span class="line">curl -Lo minikube https://github.com/kubernetes/minikube/releases/download/v1<span class="number">.10</span><span class="number">.0</span>/minikube-linux-amd64 &amp;&amp; chmod +x minikube &amp;&amp; sudo mv minikube /usr/<span class="keyword">local</span>/<span class="keyword">bin</span>/</span><br><span class="line"></span><br><span class="line">minikube <span class="keyword">start</span> <span class="comment">--registry-mirror=https://registry.docker-cn.com --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --vm-driver=docker --alsologtostderr -v=8 --base-image registry.cn-hangzhou.aliyuncs.com/google_containers/kicbase:v0.0.10</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">curl -LO https://storage.googleapis.com/kubernetes-<span class="keyword">release</span>/<span class="keyword">release</span>/v1<span class="number">.20</span><span class="number">.0</span>/<span class="keyword">bin</span>/linux/amd64/kubectl</span><br><span class="line">chmod +x ./kubectl</span><br><span class="line">sudo mv ./kubectl /usr/<span class="keyword">local</span>/<span class="keyword">bin</span>/kubectl</span><br><span class="line">kubectl <span class="keyword">version</span> <span class="comment">--client</span></span><br></pre></td></tr></table></figure>
+<h3 id="1、基本使用"><a href="#1、基本使用" class="headerlink" title="1、基本使用"></a>1、基本使用</h3><p>安装kubemini之后介绍一下基本的使用：</p>
+<p><strong>1、启动集群</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">minikube start</span><br></pre></td></tr></table></figure>
+<p><strong>2、访问minikube集群中运行的k8s dashboard：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">minikube dashboard</span><br></pre></td></tr></table></figure>
+<p>执行之后会自动打开浏览器，并且看到k8s的dashboard，可以查看集群的所有状态：</p>
+<p><img src="./kubernetes安装/image-20201212204718653.png" alt="image-20201212204718653"></p>
+<p><strong>3、使用kubectl</strong></p>
+<p>当minikube启动之后，就可以使用kubectl操作集群：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.4</span><br></pre></td></tr></table></figure>
+<p><strong>4、使用docker</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eval $(minikube docker-env)</span><br></pre></td></tr></table></figure>
+<h2 id="二、使用sealos安装高可用集群"><a href="#二、使用sealos安装高可用集群" class="headerlink" title="二、使用sealos安装高可用集群"></a>二、使用sealos安装高可用集群</h2><p>如果你需要一个高可用的集群，推荐使用一个国产的安装软件sealos：</p>
+<p>官网介绍：<a href="https://github.com/fanux/sealos" target="_blank" rel="noopener">https://github.com/fanux/sealos</a></p>
+<p>只能用丝滑一词形容的kubernetes高可用安装（kubernetes install）工具，一条命令，离线安装，包含所有依赖，内核负载不依赖haproxy keepalived,纯golang开发,99年证书,支持v1.16 v1.15 v1.17 v1.18 v1.19!</p>
+<h2 id="三、使用kubeadm安装"><a href="#三、使用kubeadm安装" class="headerlink" title="三、使用kubeadm安装"></a>三、使用kubeadm安装</h2><p>k8s官方推荐的安装方式是使用kubeadm安装。</p>
+<p>有一个比较好的安装教程：<a href="https://kuboard.cn/install/install-k8s.html" target="_blank" rel="noopener">https://kuboard.cn/install/install-k8s.html</a></p>
+<p>包括了单节点的安装和高可用的安装。</p>
 
 
                 <hr>
@@ -227,12 +227,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/sheliming-blog/2020/12/16/kubenetes入门教程/一、Kubernetes介绍及发展历史/" data-toggle="tooltip" data-placement="top" title="一、Kubernetes介绍及发展历史">&larr; Previous Post</a>
+                            <a href="/sheliming-blog/2020/12/17/kubenetes入门教程/九、Kubernetes 集群调度/" data-toggle="tooltip" data-placement="top" title="九、Kubernetes 集群调度">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/sheliming-blog/2020/12/10/JWT深入讲解与Java项目实战（附源码)/" data-toggle="tooltip" data-placement="top" title="JWT深入讲解与Java项目实战（附源码)">Next Post &rarr;</a>
+                            <a href="/sheliming-blog/2020/12/17/kubenetes入门教程/二、Kubernetes 安装/" data-toggle="tooltip" data-placement="top" title="二、Kubernetes 安装">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -265,7 +265,7 @@
                     <h5><a href="/sheliming-blog/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/sheliming-blog/tags/#微信小程序" title="微信小程序">微信小程序</a>
+                          <a class="tag" href="/sheliming-blog/tags/#Kubenetes入门" title="Kubenetes入门">Kubenetes入门</a>
                         
                     </div>
                 </section>
@@ -295,8 +295,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "hexo-theme-huxblog";
-    var disqus_identifier = "https://shelimingming.github.io/sheliming-blog/2020/12/10/通过Nginx将Springboot程序暴露https接口/";
-    var disqus_url = "https://shelimingming.github.io/sheliming-blog/2020/12/10/通过Nginx将Springboot程序暴露https接口/";
+    var disqus_identifier = "https://shelimingming.github.io/sheliming-blog/2020/12/17/kubenetes入门教程/三、Kubernetes 架构及组件介绍/";
+    var disqus_url = "https://shelimingming.github.io/sheliming-blog/2020/12/17/kubenetes入门教程/三、Kubernetes 架构及组件介绍/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

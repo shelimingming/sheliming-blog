@@ -192,7 +192,7 @@
                 post-container">
 
                 <h2 id="一、JWT是什么"><a href="#一、JWT是什么" class="headerlink" title="一、JWT是什么"></a>一、JWT是什么</h2><p>JWT全称Json Web Token，它是一个开放的标准，它定义了一种紧凑且自包含的方式，用于在各方之间安全地将信息作为JSON对象传输。 由于此信息是经过数字签名的，因此可以被验证和信任。</p>
-<p>这是官网（<a href="https://jwt.io/introduction/）对JWT的定义，个人简单的理解：JWT定义了一系列的算法将需要传输的数据进行加密生成一个token（令牌，也就是一个字符串），只要你有密钥就可以在任何地方验证token的合法性并取出token中的数据。" target="_blank" rel="noopener">https://jwt.io/introduction/）对JWT的定义，个人简单的理解：JWT定义了一系列的算法将需要传输的数据进行加密生成一个token（令牌，也就是一个字符串），只要你有密钥就可以在任何地方验证token的合法性并取出token中的数据。</a></p>
+<p>这是[官网]（<a href="https://jwt.io/introduction/）对JWT的定义，个人简单的理解：JWT定义了一系列的算法将需要传输的数据进行加密生成一个token（令牌，也就是一个字符串），只要你有密钥就可以在任何地方验证token的合法性并取出token中的数据。" target="_blank" rel="noopener">https://jwt.io/introduction/）对JWT的定义，个人简单的理解：JWT定义了一系列的算法将需要传输的数据进行加密生成一个token（令牌，也就是一个字符串），只要你有密钥就可以在任何地方验证token的合法性并取出token中的数据。</a></p>
 <h2 id="二、JWT产生的原因"><a href="#二、JWT产生的原因" class="headerlink" title="二、JWT产生的原因"></a>二、JWT产生的原因</h2><h3 id="传统的session认证："><a href="#传统的session认证：" class="headerlink" title="传统的session认证："></a>传统的session认证：</h3><p>我们知道，http协议本身是一种无状态的协议，而这就意味着如果用户向我们的应用提供了用户名和密码来进行用户认证，那么下一次请求时，用户还要再一次进行用户认证才行，因为根据http协议，我们并不能知道是哪个用户发出的请求，所以为了让我们的应用能识别是哪个用户发出的请求，我们只能在服务器存储一份用户登录的信息，这份登录信息会在响应时传递给浏览器，告诉其保存为cookie，以便下次请求时发送给我们的应用，这样我们的应用就能识别请求来自哪个用户了，这就是传统的基于session认证。</p>
 <p>传统的Session认证有一个明显的弊端，就是服务端需要存储所有用户的登录信息，这样当用户量非常大的时候服务端的压力就会很大（当然也有一系列的分布式session的方案）。所以就有一种基于token的鉴权机制被发明：</p>
 <h3 id="基于token的鉴权机制："><a href="#基于token的鉴权机制：" class="headerlink" title="基于token的鉴权机制："></a>基于token的鉴权机制：</h3><p>首先用户向服务器发送用户名密码的鉴权信息，服务器根据JWT的规则生成一个token，这个token包含用户的信息和签名的信息，用户拿到这个token保存在本地，以后发请求的时候都带上这个token，服务端根据token可以验证token的合法性并解析出用户的信息，这样就可以识别出是哪个用户了。</p>
@@ -311,8 +311,7 @@
 <p><img src="image-20201209195709567.png" alt="image-20201209195709567"></p>
 <p>传入token之后：调用成功</p>
 <p><img src="image-20201209195746076.png" alt="image-20201209195746076"></p>
-<p>#### </p>
-<h2 id="七、结语"><a href="#七、结语" class="headerlink" title="七、结语"></a>七、结语</h2><p>至此、我们已经了解JWT的原理、jjwt库的使用以及项目中的应用。赶紧自己去实验一下吧。</p>
+<h2 id="七、结语"><a href="#七、结语" class="headerlink" title="七、结语"></a>七、结语</h2><p>至此、我们已经了解JWT的原理、jjwt库的使用以及项目中的应用。赶紧自己去实践一下吧。</p>
 <p>以上所展示的源码地址：<a href="https://github.com/shelimingming/time_manage/tree/main/time_manage_backend" target="_blank" rel="noopener">https://github.com/shelimingming/time_manage/tree/main/time_manage_backend</a></p>
 
 
